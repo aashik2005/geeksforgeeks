@@ -1,0 +1,76 @@
+STRING ROTATION OF EACH OTHER:
+
+Difficulty: Easy || Accuracy: 43.83% || Submissions: 268K+ || Points: 2 || Average Time: 15m
+You are given two strings of equal lengths, s1 and s2. The task is to check if s2 is a rotated version of the string s1.
+
+Note: The characters in the strings are in lowercase.
+
+Examples :
+Input: s1 = "abcd", s2 = "cdab"
+Output: true
+Explanation: After 2 right rotations, s1 will become equal to s2.
+
+Input: s1 = "aab", s2 = "aba"
+Output: true
+Explanation: After 1 left rotation, s1 will become equal to s2.
+
+Input: s1 = "abcd", s2 = "acbd"
+Output: false
+Explanation: Strings are not rotations of each other.
+
+SOLUTION:
+
+class Solution {
+    
+    public static boolean areRotations(String s1, String s2) {
+        if(s1==null || s2==null || s1.length()!=s2.length()){
+            return false;
+        }
+        String combined=s1+s1;
+        return kmpSearch(combined,s2);
+    }
+    private static boolean kmpSearch(String text,String pattern){
+        int[] lps=computeLPSArray(pattern);
+        int i=0,j=0;
+        while(i<text.length()){
+            if(pattern.charAt(j)==text.charAt(i)){
+                i++;
+                j++;
+            }
+            if(j==pattern.length()){
+                return true;
+            }
+            else if(i<text.length() && pattern.charAt(j)!=text.charAt(i)){
+                if(j!=0)
+                j=lps[j-1];
+                else 
+                i++;
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    
+    
+    private static int[] computeLPSArray(String pat){
+        int[] lps=new int[pat.length()];
+        int len=0,i=1;
+        while(i<pat.length()){
+            if(pat.charAt(i)==pat.charAt(len)){
+                len++;
+                lps[i]=len;
+                i++;
+            }else{
+                if(len!=0){
+                    len=lps[len-1];
+                }else{
+                    lps[i]=0;
+                    i++;
+                }
+            }
+        }
+        return lps;
+    }
+}
